@@ -16,7 +16,7 @@ Built in an evening. Free. No accounts, no analytics, no data leaves your browse
 The Chrome Web Store charges $5 to publish, which I didn't pay. So this is **sideload-only**. Install takes about 30 seconds.
 
 1. **Download.** Click the green **Code** button above → **Download ZIP**. Extract it.
-   _Or:_ `git clone https://github.com/aashikahmed/life-dashboard.git`
+   _Or:_ `git clone https://github.com/aashikahmed/life-dashboard-chrome.git`
 2. **Open `chrome://extensions`** in Chrome.
 3. **Toggle "Developer mode"** ON (top-right).
 4. Click **"Load unpacked"** → select the `life-dashboard/` folder.
@@ -41,7 +41,7 @@ The place-of-birth input auto-detects your timezone for accurate calculation. Da
 Send them the GitHub link. Or:
 
 ```sh
-zip -r life-dashboard.zip life-dashboard/
+zip -r life-dashboard.zip life-dashboard-chrome/
 ```
 
 Email/AirDrop the zip. They unzip and follow the install steps. Each person sets their own birthday on first run.
