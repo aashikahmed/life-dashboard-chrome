@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Life Dashboard",
+  "version": "0.3.0",
+  "description": "A typographic readout of how long you've been alive. Replaces the new tab.",
+  "permissions": ["storage"],
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  }
+}

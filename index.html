@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Life</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0a0a0c;
+    --text-1: #e8e8eb;
+    --text-2: #8b8b94;
+    --text-3: #4d4d56;
+    --hairline: #1f1f24;
+    --accent: #d4a574;
+    --error: #c75c5c;
+
+    --gutter-x: clamp(24px, 6vw, 96px);
+    --gutter-y: clamp(20px, 3.2vh, 40px);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text-1);
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    font-feature-settings: "ss01", "ss02", "cv11";
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,255,255,0.025), transparent 50%),
+      radial-gradient(circle at 80% 90%, rgba(212,165,116,0.018), transparent 50%),
+      var(--bg);
+  }
+
+  [hidden] { display: none !important; }
+
+  /* ── PAGE / DASHBOARD ─────────────────────────────────────── */
+  .page {
+    min-height: 100vh;
+    padding: var(--gutter-y) var(--gutter-x);
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: clamp(20px, 3vh, 36px);
+  }
+
+  /* ── HERO ─────────────────────────────────────────────────── */
+  .primary {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 2.8vh, 32px);
+    padding-bottom: clamp(20px, 3vh, 36px);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .age-display {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400;
+    font-size: clamp(56px, 8.5vw, 128px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--text-1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: clamp(12px, 1.8vw, 28px);
+  }
+
+  .age-display .num { font-feature-settings: "tnum"; }
+  .age-display .unit {
+    font-style: italic;
+    color: var(--text-2);
+    font-size: 0.42em;
+    margin-left: -0.4em;
+    margin-right: 0.3em;
+    letter-spacing: 0;
+  }
+
+  .ticker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ticker .seconds {
+    font-family: "Geist Mono", monospace;
+    font-weight: 400;
+    font-size: clamp(34px, 4.8vw, 68px);
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .ticker .seconds .ms { color: var(--accent); opacity: 0.55; }
+
+  .ticker .ticker-label {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  /* ── alt units / meta ─────────────────────────────────────── */
+  .alt-units {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 3vw, 48px);
+  }
+  .alt-units > div { display: flex; flex-direction: column; gap: 6px; }
+  .alt-units .num {
+    font-family: "Geist Mono", monospace;
+    font-weight: 500;
+    font-size: clamp(20px, 2.2vw, 28px);
+    color: var(--text-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .alt-units .lbl {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(24px, 6vw, 96px);
+    padding-top: clamp(16px, 2.5vh, 32px);
+    border-top: 1px solid var(--hairline);
+  }
+  .meta-block h3 {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .meta-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .meta-block li {
+    display: flex; align-items: baseline; gap: 12px;
+    color: var(--text-2); font-size: 13px;
+  }
+  .meta-block li .num {
+    font-family: "Geist Mono", monospace;
+    font-weight: 500;
+    color: var(--text-1);
+    font-variant-numeric: tabular-nums;
+    min-width: 9ch;
+    display: inline-block;
+  }
+  .meta-block li .asm {
+    color: var(--text-3); font-size: 11px;
+    font-style: italic; margin-left: auto;
+  }
+
+  .remaining .big {
+    font-family: "Instrument Serif", serif;
+    font-size: clamp(48px, 5vw, 72px);
+    line-height: 1;
+    color: var(--text-1);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .remaining .big-label {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+  .progress { height: 2px; background: var(--hairline); position: relative; overflow: hidden; }
+  .progress .fill {
+    position: absolute; inset: 0 auto 0 0;
+    background: var(--accent);
+    transition: width 800ms ease;
+  }
+  .pct-row {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-3);
+    font-style: italic;
+  }
+  .pct-row .pct-num {
+    font-family: "Geist Mono", monospace;
+    font-style: normal;
+    color: var(--text-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── EDIT LINK ────────────────────────────────────────────── */
+  .edit-link {
+    position: fixed;
+    top: var(--gutter-y);
+    right: var(--gutter-x);
+    background: transparent;
+    border: none;
+    color: var(--text-3);
+    font-family: "Geist", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 6px 8px;
+    transition: color 200ms;
+  }
+  .edit-link:hover { color: var(--text-1); }
+
+  /* ── SETTINGS PANEL ───────────────────────────────────────── */
+  .settings {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gutter-y) var(--gutter-x);
+  }
+
+  .settings-inner {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .settings h1 {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text-1);
+  }
+
+  .settings .hint {
+    color: var(--text-3);
+    font-size: 13px;
+    font-style: italic;
+    margin-top: -24px;
+  }
+
+  .settings form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .settings label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .settings label .lbl {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .settings input[type="date"],
+  .settings input[type="time"],
+  .settings input[type="text"] {
+    background: transparent;
+    color: var(--text-1);
+    border: none;
+    border-bottom: 1px solid var(--hairline);
+    padding: 10px 0;
+    font-family: "Geist Mono", monospace;
+    font-size: 20px;
+    outline: none;
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+    border-radius: 0;
+    appearance: none;
+    color-scheme: dark;
+  }
+  .settings input[type="text"] {
+    font-family: "Geist", sans-serif;
+    font-variant-numeric: normal;
+  }
+  .settings input[type="date"]:focus,
+  .settings input[type="time"]:focus,
+  .settings input[type="text"]:focus {
+    border-bottom-color: var(--accent);
+  }
+  .settings input::placeholder {
+    color: var(--text-3);
+    font-style: italic;
+  }
+
+  .tz-caption {
+    font-size: 11px;
+    color: var(--text-3);
+    font-style: italic;
+    margin-top: 4px;
+    min-height: 1.4em;
+    font-family: "Geist Mono", monospace;
+  }
+  .tz-caption.detected { color: var(--accent); font-style: normal; }
+  .tz-caption.fallback { color: var(--text-3); }
+
+  .settings .actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .btn-primary, .btn-ghost {
+    font-family: "Geist", sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    background: transparent;
+    transition: background 200ms, color 200ms, border-color 200ms;
+    font-weight: 500;
+  }
+  .btn-primary {
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-ghost {
+    border: 1px solid var(--hairline);
+    color: var(--text-2);
+  }
+  .btn-ghost:hover {
+    border-color: var(--text-2);
+    color: var(--text-1);
+  }
+
+  .error {
+    color: var(--error);
+    font-size: 12px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* ── responsive ───────────────────────────────────────────── */
+  @media (max-width: 720px) {
+    .alt-units { grid-template-columns: 1fr 1fr; }
+    .alt-units > div:last-child { grid-column: span 2; }
+    .meta-grid { grid-template-columns: 1fr; gap: 32px; }
+    .age-display { font-size: clamp(48px, 14vw, 96px); }
+    .ticker .seconds { font-size: clamp(32px, 8vw, 56px); }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="page" id="dashboard" hidden>
+
+  <main class="primary">
+    <div class="age-display">
+      <span class="num" id="years">—</span><span class="unit">years</span>
+      <span class="num" id="months">—</span><span class="unit">months</span>
+      <span class="num" id="days">—</span><span class="unit">days</span>
+      <span class="num" id="sec-today">—</span><span class="unit">seconds</span>
+    </div>
+
+    <div class="ticker">
+      <div class="seconds"><span id="sec-int">—</span>.<span class="ms" id="sec-frac">———</span></div>
+      <div class="ticker-label">seconds alive</div>
+    </div>
+  </main>
+
+  <section class="alt-units">
+    <div><span class="num" id="total-days">—</span><span class="lbl">days lived</span></div>
+    <div><span class="num" id="total-hours">—</span><span class="lbl">hours</span></div>
+    <div><span class="num" id="total-minutes">—</span><span class="lbl">minutes</span></div>
+  </section>
+
+  <section class="meta-grid">
+    <div class="meta-block">
+      <h3>Estimates</h3>
+      <ul>
+        <li><span class="num" id="heartbeats">—</span><span>heartbeats</span><span class="asm">~80 bpm avg</span></li>
+        <li><span class="num" id="sunrises">—</span><span>sunrises</span><span class="asm">one per day</span></li>
+        <li><span class="num" id="meals">—</span><span>meals</span><span class="asm">~3 / day</span></li>
+        <li><span class="num" id="sleep-days">—</span><span>days asleep</span><span class="asm">~8 h / night</span></li>
+      </ul>
+    </div>
+
+    <div class="meta-block remaining">
+      <h3>Remaining</h3>
+      <div class="big" id="days-left">—</div>
+      <div class="big-label">days estimated remaining</div>
+      <div class="progress"><div class="fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="pct-row">
+        <span><span class="pct-num" id="pct-lived">—</span> lived</span>
+        <span class="asm">assuming 78 yrs</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="settings" id="settings" hidden>
+  <div class="settings-inner">
+    <h1>when were you born?</h1>
+    <p class="hint">stored locally, synced across your Chrome via your Google account. nothing leaves your browser.</p>
+    <form id="settings-form">
+      <label>
+        <span class="lbl">date</span>
+        <input type="date" id="dob-date" required>
+      </label>
+      <label>
+        <span class="lbl">time</span>
+        <input type="time" id="dob-time" required>
+      </label>
+      <label>
+        <span class="lbl">place of birth</span>
+        <input type="text" id="dob-place" list="place-list" autocomplete="off" placeholder="Mumbai, Dubai, London…">
+        <datalist id="place-list"></datalist>
+        <div class="tz-caption" id="tz-caption"></div>
+      </label>
+      <div class="error" id="settings-error" hidden></div>
+      <div class="actions">
+        <button type="submit" class="btn-primary">save</button>
+        <button type="button" id="settings-cancel" class="btn-ghost" hidden>cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<button class="edit-link" id="edit-link" hidden>edit birthday</button>
+
+<script src="app.js"></script>
+</body>
+</html>
