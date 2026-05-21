@@ -2,8 +2,7 @@
 
 A Chrome new-tab extension that shows how long you've been alive — to the millisecond. Designed to be looked at, not scrolled past.
 
-<!-- Add screenshot.png to the repo root and uncomment: -->
-<!-- ![Screenshot](screenshot.png) -->
+![Screenshot](screenshot.png)
 
 ## Why
 
