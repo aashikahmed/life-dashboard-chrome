@@ -18,8 +18,28 @@ The Chrome Web Store charges $5 to publish, which I didn't pay. So this is **sid
    _Or:_ `git clone https://github.com/aashikahmed/life-dashboard-chrome.git`
 2. **Open `chrome://extensions`** in Chrome.
 3. **Toggle "Developer mode"** ON (top-right).
-4. Click **"Load unpacked"** → select the `life-dashboard/` folder.
+4. Click **"Load unpacked"** → select the `life-dashboard-chrome/` folder.
 5. **Open a new tab.** First run asks for your birthday + place. Save. Done.
+
+### Or use it without installing (web version)
+
+Same code, hosted via GitHub Pages: **https://aashikahmed.github.io/life-dashboard-chrome/**
+
+Works in any browser, incognito tab, or phone — no extension required. Settings live in that browser's localStorage.
+
+**For incognito sessions** (where localStorage clears each time): bookmark a URL with your data baked in as query params:
+
+```
+https://aashikahmed.github.io/life-dashboard-chrome/?date=1996-05-22&time=20:38&place=Mumbai
+```
+
+Supported params:
+- `date` — `YYYY-MM-DD`
+- `time` — `HH:MM` (24h)
+- `place` — any city from the embedded list (`Mumbai`, `Dubai`, `London`, etc.)
+- `tz` — any IANA timezone (`Asia/Kolkata`, `Europe/London`...) — overrides `place` if both given
+
+The bookmark URL stays in *your* private bookmarks. Nothing is sent anywhere.
 
 ## Configure
 

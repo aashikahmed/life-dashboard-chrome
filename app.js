@@ -381,6 +381,29 @@ async function init() {
   $("dob-date").addEventListener("change", updateTzCaption);
   $("dob-time").addEventListener("change", updateTzCaption);
 
+  // URL params take precedence over saved storage so users can bookmark a
+  // pre-configured URL (useful for incognito where storage is ephemeral).
+  // Format: ?date=YYYY-MM-DD&time=HH:MM&place=Mumbai  (or &tz=Asia/Kolkata)
+  const params = new URLSearchParams(location.search);
+  const dateParam = params.get("date");
+  const timeParam = params.get("time");
+  if (dateParam && timeParam) {
+    const tzParam = params.get("tz");
+    const placeParam = params.get("place") || "";
+    const match = placeParam ? findCity(placeParam) : null;
+    const tz = tzParam || (match && match.tz) || browserTz();
+    const iso = buildBirthdayISO(dateParam, timeParam, tz);
+    if (iso && new Date(iso) <= new Date()) {
+      await storage.set({
+        birthday: iso,
+        timezone: tz,
+        place: match ? match.name : placeParam
+      });
+      showDashboard(iso);
+      return;
+    }
+  }
+
   const data = await storage.get(["birthday", "timezone", "place"]);
   if (data.birthday) {
     showDashboard(data.birthday);
