@@ -120,20 +120,40 @@ const browserTz = () => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC
 
 let birth = null;
 let birthMs = 0;
+let anchorMs = 0;
 let staticInterval = null;
 let tickerRaf = null;
 
-function calendarDiff(from, to) {
-  let years = to.getFullYear() - from.getFullYear();
-  let months = to.getMonth() - from.getMonth();
-  let days = to.getDate() - from.getDate();
-  if (days < 0) {
-    months--;
-    const prev = new Date(to.getFullYear(), to.getMonth(), 0);
-    days += prev.getDate();
+// Walk forward from `from` in calendar years, then months, then days, stopping
+// just before `to`. The anchor is the wall-clock moment the days field last
+// ticked — `to - anchor` is the trailing hours/minutes/seconds of the age.
+// Robust to DST and variable month lengths because each step uses Date setters
+// rather than fixed ms offsets.
+function ageBreakdown(from, to) {
+  const anchor = new Date(from);
+  let years = 0, months = 0, days = 0;
+  while (true) {
+    const next = new Date(anchor);
+    next.setFullYear(next.getFullYear() + 1);
+    if (next > to) break;
+    anchor.setTime(next.getTime());
+    years++;
   }
-  if (months < 0) { years--; months += 12; }
-  return { years, months, days };
+  while (true) {
+    const next = new Date(anchor);
+    next.setMonth(next.getMonth() + 1);
+    if (next > to) break;
+    anchor.setTime(next.getTime());
+    months++;
+  }
+  while (true) {
+    const next = new Date(anchor);
+    next.setDate(next.getDate() + 1);
+    if (next > to) break;
+    anchor.setTime(next.getTime());
+    days++;
+  }
+  return { years, months, days, anchorMs: anchor.getTime() };
 }
 
 // ── city / timezone helpers ─────────────────────────────────────
@@ -189,7 +209,8 @@ function buildBirthdayISO(date, time, tz) {
 // ── dashboard render ────────────────────────────────────────────
 function paintStatic() {
   const now = new Date();
-  const diff = calendarDiff(birth, now);
+  const diff = ageBreakdown(birth, now);
+  anchorMs = diff.anchorMs;
 
   $("years").textContent = diff.years;
   $("months").textContent = diff.months;
@@ -230,9 +251,10 @@ function tick() {
   $("sec-int").textContent = whole.toLocaleString("en-US");
   $("sec-frac").textContent = pad(frac, 3);
 
-  const d = new Date(now);
-  const sod = d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
-  $("sec-today").textContent = sod.toLocaleString("en-US");
+  // seconds elapsed since the days field last ticked — rolls 0→86,400
+  // in lockstep with the years/months/days breakdown
+  const sinceAnchor = Math.floor((now - anchorMs) / 1000);
+  $("sec-today").textContent = sinceAnchor.toLocaleString("en-US");
 
   tickerRaf = requestAnimationFrame(tick);
 }
